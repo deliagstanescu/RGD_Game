@@ -14,6 +14,13 @@ public class PlayerMovementBase : MonoBehaviour
     private CharacterController controller;
     private float xRotation = 0f;
 
+    [Header("Jumping & Gravity Settings")]
+    public float jumpHeight = 1.2f;
+    public float gravity = -19.62f;
+
+    private Vector3 velocity;
+    private bool isGrounded;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -31,14 +38,25 @@ public class PlayerMovementBase : MonoBehaviour
         playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
 
+        isGrounded = controller.isGrounded;
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;
+        }
+
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
-
         float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed;
 
         Vector3 move = transform.right * x + transform.forward * z;
-        move.y = -2f;
-
         controller.Move(move * currentSpeed * Time.deltaTime);
+
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
     }
 }
