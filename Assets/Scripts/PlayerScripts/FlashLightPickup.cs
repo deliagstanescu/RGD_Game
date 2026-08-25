@@ -3,9 +3,9 @@ using UnityEngine;
 public class FlashlightPickup : MonoBehaviour
 {
     [Header("Referețe")]
-    public Transform handHolder;     // Punctul din mana (sub Camera) unde va sta lanterna
-    public Light flashlightLight;    // Lumina (Spotlight) lanternei
-    public float pickupDistance = 3f;// Distanta de la care poti lua lanterna
+    public Transform handHolder;
+    public Light flashlightLight;
+    public float pickupDistance = 3f;
 
     private GameObject equippedFlashlight = null;
     private bool isEquipped = false;

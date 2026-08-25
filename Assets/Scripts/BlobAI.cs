@@ -3,6 +3,7 @@ using UnityEngine.AI;
 
 public class BlobAI : MonoBehaviour
 {
+    public bool isActivated = false;
     [Header("Patrol Settings")]
     public Transform[] waypoints; 
     private int currentWaypointIndex = 0;
@@ -24,11 +25,15 @@ public class BlobAI : MonoBehaviour
             if (playerObj != null) player = playerObj.transform;
         }
 
-        GoToNextWaypoint();
+        if (isActivated)
+        {
+            GoToNextWaypoint();
+        }
     }
 
     void Update()
     {
+        if (!isActivated) return;
         if (player == null) return;
 
         
@@ -58,6 +63,13 @@ public class BlobAI : MonoBehaviour
         {
             Patrol();
         }
+    }
+    public void ActivateEnemy()
+    {
+        if (isActivated) return;
+
+        isActivated = true;
+        GoToNextWaypoint();
     }
 
     void Patrol()
