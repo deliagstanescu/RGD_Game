@@ -12,10 +12,10 @@ public class VCRController : MonoBehaviour
     public MeshRenderer screenRenderer;
     public Material screenOnMaterial;
     public GameObject insertedTapeVisual;
-    public float placeholderVideoDuration = 5f; //asteapta 5 sec, cand vom avea video o sa fie durata clipului
+    public float placeholderVideoDuration = 5f;
 
-    [Header("Video Setup (pentru când ai clipul final)")]
-    public VideoPlayer tvVideoPlayer; //aici o sa fie videoul cand o sa l avem
+    [Header("Video Setup")]
+    public VideoPlayer tvVideoPlayer;
 
     [Header("Audio")]
     public AudioSource vcrAudioSource;
@@ -75,20 +75,30 @@ public class VCRController : MonoBehaviour
     private IEnumerator WaitForPlaceholderVideo(float duration)
     {
         yield return new WaitForSeconds(duration);
-        TriggerEnemy();
+        OnSequenceFinished();
     }
 
     private void OnVideoFinished(VideoPlayer vp)
     {
-        TriggerEnemy();
+        OnSequenceFinished();
     }
 
-    private void TriggerEnemy()
+    private void OnSequenceFinished()
     {
+        if (AnomalyManager.Instance != null)
+        {
+            AnomalyManager.Instance.StartRandomAnomaly();
+            Debug.Log("VCR: Anomalia a fost declansata la finalul clipului!");
+        }
+        else
+        {
+            Debug.LogWarning("VCR: AnomalyManager.Instance nu a fost gasit în scena!");
+        }
+
         if (enemyToActivate != null)
         {
             enemyToActivate.ActivateEnemy();
-            Debug.Log("Videoclipul s-a terminat! Papusa a pornit!");
+            Debug.Log("VCR: Papusa a inceput sa se miste!");
         }
     }
 

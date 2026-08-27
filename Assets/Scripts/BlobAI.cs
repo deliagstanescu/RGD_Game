@@ -4,16 +4,19 @@ using UnityEngine.AI;
 public class BlobAI : MonoBehaviour
 {
     public bool isActivated = false;
+
     [Header("Patrol Settings")]
-    public Transform[] waypoints; 
+    public Transform[] waypoints;
     private int currentWaypointIndex = 0;
 
     [Header("Detection Settings")]
-    public Transform player;      
-    public float detectionRange = 8f; 
+    public Transform player;
+    public float detectionRange = 8f;
+    public float lostSightTimeLimit = 3f;
 
     private NavMeshAgent agent;
     private bool isChasing = false;
+    private float lostSightTimer = 0f;
 
     void Start()
     {
@@ -36,25 +39,28 @@ public class BlobAI : MonoBehaviour
         if (!isActivated) return;
         if (player == null) return;
 
-        
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-       
         if (distanceToPlayer <= detectionRange)
         {
             isChasing = true;
+            lostSightTimer = 0f;
         }
         else
         {
-            
             if (isChasing)
             {
-                isChasing = false;
-                GoToNextWaypoint();
+                lostSightTimer += Time.deltaTime;
+
+                if (lostSightTimer >= lostSightTimeLimit)
+                {
+                    isChasing = false;
+                    lostSightTimer = 0f;
+                    GoToNextWaypoint();
+                }
             }
         }
 
-       
         if (isChasing)
         {
             ChasePlayer();
@@ -64,6 +70,7 @@ public class BlobAI : MonoBehaviour
             Patrol();
         }
     }
+
     public void ActivateEnemy()
     {
         if (isActivated) return;
@@ -74,9 +81,8 @@ public class BlobAI : MonoBehaviour
 
     void Patrol()
     {
-        if (waypoints.Length == 0) return;
+        if (waypoints == null || waypoints.Length == 0) return;
 
-       
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
             GoToNextWaypoint();
@@ -85,22 +91,17 @@ public class BlobAI : MonoBehaviour
 
     void GoToNextWaypoint()
     {
-        if (waypoints.Length == 0) return;
+        if (waypoints == null || waypoints.Length == 0) return;
 
-        
         agent.destination = waypoints[currentWaypointIndex].position;
-
-        
         currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
     }
 
     void ChasePlayer()
     {
-      
         agent.destination = player.position;
     }
 
-   
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

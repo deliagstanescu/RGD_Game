@@ -3,46 +3,45 @@ using UnityEngine.Video;
 
 public class TVAnomaly : AnomalyBase, IInteractable
 {
-    [Header("TV")]
+    [Header("TV Setup")]
     public GameObject tvScreen;
     public VideoPlayer videoPlayer;
+    public AudioSource tvAudio;
 
-    [Header("Anomaly Material")]
-    public Material anomalyMaterial;
+    [Header("Screen Off Appearance")]
+    public Material screenOffMaterial;
 
-    private Material originalMaterial;
     private Renderer screenRenderer;
+    private Material defaultMaterial;
+
+    void Awake()
+    {
+        if (tvScreen != null)
+        {
+            screenRenderer = tvScreen.GetComponent<Renderer>();
+            if (screenRenderer != null)
+            {
+                defaultMaterial = screenRenderer.material;
+            }
+        }
+    }
 
     public override void Activate()
     {
         base.Activate();
-
-        if (tvScreen != null)
-        {
-            tvScreen.SetActive(true);
-        }
 
         if (videoPlayer != null)
         {
             videoPlayer.Play();
         }
 
-        if (tvScreen != null)
+        if (tvAudio != null)
         {
-            screenRenderer = tvScreen.GetComponent<Renderer>();
-
-            if (screenRenderer != null)
-            {
-                originalMaterial = screenRenderer.material;
-
-                if (anomalyMaterial != null)
-                {
-                    screenRenderer.material = anomalyMaterial;
-                }
-            }
+            tvAudio.loop = true;
+            tvAudio.Play();
         }
 
-        Debug.Log("TV anomaly activated!");
+        Debug.Log("TV Anomaly activata!");
     }
 
     public void Interact()
@@ -60,11 +59,30 @@ public class TVAnomaly : AnomalyBase, IInteractable
             videoPlayer.Stop();
         }
 
-        if (screenRenderer != null && originalMaterial != null)
+        if (tvAudio != null)
         {
-            screenRenderer.material = originalMaterial;
+            tvAudio.Stop();
+        }
+
+        if (screenRenderer != null)
+        {
+            if (screenOffMaterial != null)
+            {
+                screenRenderer.material = screenOffMaterial;
+            }
+            else if (defaultMaterial != null)
+            {
+                screenRenderer.material = defaultMaterial;
+            }
         }
 
         base.Resolve();
+
+        if (AnomalyManager.Instance != null)
+        {
+            AnomalyManager.Instance.AnomalyResolved(this);
+        }
+
+        Debug.Log("TV Anomaly rezolvata!");
     }
 }
