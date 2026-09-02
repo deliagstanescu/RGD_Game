@@ -108,6 +108,10 @@ public class AnomalyManager : MonoBehaviour
         // signal distortion
         // jumpscare
         // Game Over
+        if (GameOverManager.Instance != null)
+        {
+            GameOverManager.Instance.TriggerGameOver("Anomalia nerezolvata te-a omorat.");
+        }
     }
 
     public bool IsAnomalyActive()

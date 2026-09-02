@@ -34,12 +34,18 @@ public class RadioAnomaly : AnomalyBase, IInteractable
         if (!isActive)
             return;
 
-        if (radioAudio != null)
+        if (RadioSliderMinigame.Instance != null)
         {
-            radioAudio.Stop();
+            RadioSliderMinigame.Instance.StartMinigame(() =>
+            {
+                Resolve();
+            });
         }
-
-        Resolve();
+        else
+        {
+            Debug.LogWarning("[RadioAnomaly] RadioSliderMinigame.Instance este NULL! Rezolvam anomalia direct...");
+            Resolve();
+        }
     }
 
     public override void Resolve()

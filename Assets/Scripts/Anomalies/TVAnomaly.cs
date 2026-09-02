@@ -46,10 +46,27 @@ public class TVAnomaly : AnomalyBase, IInteractable
 
     public void Interact()
     {
-        if (!isActive)
-            return;
+        Debug.Log("<color=cyan>TVAnomaly: S-a apelat Interact()!</color>");
 
-        Resolve();
+        if (!isActive)
+        {
+            Debug.LogWarning("TVAnomaly: Nu este activa (isActive = false)!");
+            return;
+        }
+
+        if (WireMinigame.Instance != null)
+        {
+            Debug.Log("<color=green>WireMinigame.Instance GASIT! Pornim minigame...</color>");
+            WireMinigame.Instance.StartMinigame(() =>
+            {
+                Resolve();
+            });
+        }
+        else
+        {
+            Debug.LogError("WireMinigame.Instance este NULL!");
+            Resolve();
+        }
     }
 
     public override void Resolve()

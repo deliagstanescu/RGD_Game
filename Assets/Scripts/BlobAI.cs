@@ -36,11 +36,23 @@ public class BlobAI : MonoBehaviour
 
     void Update()
     {
-        if (!isActivated) return;
-        if (player == null) return;
+        if (!isActivated)
+            return;
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        if (player == null)
+            return;
+        Vector2 enemyPos2D = new Vector2(transform.position.x, transform.position.z);
+        Vector2 playerPos2D = new Vector2(player.position.x, player.position.z);
+        float distanceToPlayer = Vector2.Distance(enemyPos2D, playerPos2D);
 
+        if (distanceToPlayer <= 1.8f)
+        {
+            if (GameOverManager.Instance != null)
+            {
+                GameOverManager.Instance.TriggerGameOver("Ai fost prins de papusa!");
+            }
+            return;
+        }
         if (distanceToPlayer <= detectionRange)
         {
             isChasing = true;
@@ -106,5 +118,17 @@ public class BlobAI : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!isActivated) return;
+
+        if (other.CompareTag("Player"))
+        {
+            if (GameOverManager.Instance != null)
+            {
+                GameOverManager.Instance.TriggerGameOver("Ai fost prins de papusa!");
+            }
+        }
     }
 }

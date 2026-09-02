@@ -85,6 +85,13 @@ public class VCRController : MonoBehaviour
 
     private void OnSequenceFinished()
     {
+        if (screenObject != null)
+            screenObject.SetActive(false);
+        if (insertedTapeVisual != null)
+            insertedTapeVisual.SetActive(false);
+        if (tvVideoPlayer != null)
+            tvVideoPlayer.Stop();
+        hasTape = false;
         if (AnomalyManager.Instance != null)
         {
             AnomalyManager.Instance.StartRandomAnomaly();
@@ -94,7 +101,6 @@ public class VCRController : MonoBehaviour
         {
             Debug.LogWarning("VCR: AnomalyManager.Instance nu a fost gasit în scena!");
         }
-
         if (enemyToActivate != null)
         {
             enemyToActivate.ActivateEnemy();
