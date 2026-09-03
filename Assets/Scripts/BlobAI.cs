@@ -49,7 +49,7 @@ public class BlobAI : MonoBehaviour
         {
             if (GameOverManager.Instance != null)
             {
-                GameOverManager.Instance.TriggerGameOver("Ai fost prins de papusa!");
+                GameOverManager.Instance.TriggerGameOver("You were caught by the puppet!");
             }
             return;
         }

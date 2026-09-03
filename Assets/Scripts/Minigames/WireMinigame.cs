@@ -45,8 +45,6 @@ public class WireMinigame : MonoBehaviour
         onCompleteCallback = onCompleted;
         connectedWiresCount = 0;
         selectedNode = null;
-
-        // 1. Aprindem panoul PRIMUL, sa fie vizibil imediat
         if (minigamePanel != null)
         {
             minigamePanel.SetActive(true);

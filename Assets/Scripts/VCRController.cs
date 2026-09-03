@@ -16,6 +16,7 @@ public class VCRController : MonoBehaviour
 
     [Header("Video Setup")]
     public VideoPlayer tvVideoPlayer;
+    public VideoClip[] videoClips;
 
     [Header("Audio")]
     public AudioSource vcrAudioSource;
@@ -57,17 +58,23 @@ public class VCRController : MonoBehaviour
             screenObject.SetActive(true);
         }
 
-        if (screenRenderer != null && screenOnMaterial != null)
+        //redam clipul random
+        if (tvVideoPlayer != null && videoClips != null && videoClips.Length > 0)
         {
-            screenRenderer.material = screenOnMaterial;
+            int randomIndex = Random.Range(0, videoClips.Length);
+            tvVideoPlayer.clip = videoClips[randomIndex];
+            tvVideoPlayer.Play();
         }
-
-        if (tvVideoPlayer != null && tvVideoPlayer.clip != null)
+        else if (tvVideoPlayer != null && tvVideoPlayer.clip != null)
         {
             tvVideoPlayer.Play();
         }
         else
         {
+            if (screenRenderer != null && screenOnMaterial != null)
+            {
+                screenRenderer.material = screenOnMaterial;
+            }
             StartCoroutine(WaitForPlaceholderVideo(placeholderVideoDuration));
         }
     }

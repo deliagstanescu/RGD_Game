@@ -110,7 +110,7 @@ public class AnomalyManager : MonoBehaviour
         // Game Over
         if (GameOverManager.Instance != null)
         {
-            GameOverManager.Instance.TriggerGameOver("Anomalia nerezolvata te-a omorat.");
+            GameOverManager.Instance.TriggerGameOver("You didn't solve the anomaly in time.");
         }
     }
 
